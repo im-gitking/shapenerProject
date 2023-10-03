@@ -16,7 +16,7 @@ function storeLocal(e) {
         Email: email,
         Phone: phone
     };
-    let addtext = `${name} - ${email} - ${phone}`;
+    let addtext = `${name}-${email}-${phone}`;
     console.log(addtext);
     
     // add new user in list
@@ -27,28 +27,70 @@ function storeLocal(e) {
     delBtn.setAttribute('type', 'button');
     delBtn.setAttribute('value', 'delete');
     delBtn.className = 'delete';
+    // add edit button
+    let editBtn = document.createElement('input');
+    editBtn.setAttribute('type', 'button');
+    editBtn.setAttribute('value', 'edit');
+    editBtn.className = 'edit';
     
     newLi.appendChild(delBtn);
+    newLi.appendChild(editBtn);
     outputList.appendChild(newLi);
 
     let userObjSerialized = JSON.stringify(userObj);
-    localStorage.setItem(name, userObjSerialized);
+    localStorage.setItem(email, userObjSerialized);
 }
 
 function delUser(e) {
+    // for delete action
     if(e.target.classList.contains('delete')) {
         let targetElm = e.target.previousSibling;
         let targetText = targetElm.nodeValue;
         let keyValue = '';
-        for(let i = 0; i <= targetText.length; i++) {
-            if(targetText[i] == '-') {
+        let count = 0;
+        for(let i = 0; i < targetText.length; i++) {
+            if(targetText[i] == '-' && count == 1) {
                 break;
             }
-            keyValue = keyValue + targetText[i]
+            else if(targetText[i] == '-') {
+                count++;
+                keyValue = '';
+            }
+            else {
+                keyValue = keyValue + targetText[i];
+            }
         }
-        keyValue = keyValue.slice(0, -1);
-        localStorage.removeItem(keyValue);
 
+        localStorage.removeItem(keyValue);
+        targetElm.parentElement.remove();
+    }
+    
+    // for edit action
+    if(e.target.classList.contains('edit')) {
+        let targetElm = e.target.previousSibling.previousSibling;
+        let targetText = targetElm.nodeValue;
+        let keyValue = '';
+        let count = 0;
+        for(let i = 0; i < targetText.length; i++) {
+            if(targetText[i] == '-' && count == 0) {
+                document.getElementById('name').value = keyValue;
+                count++;
+                keyValue = '';
+            }
+            else if(targetText[i] == '-' && count == 1) {
+                email = keyValue;
+                document.getElementById('email').value = keyValue;
+                count++;
+                keyValue = '';
+            }
+            else{
+                keyValue = keyValue + targetText[i];
+            }
+            
+        }
+        document.getElementById('phone').value = keyValue;
+        
+        localStorage.removeItem(email);
         targetElm.parentElement.remove();
     }
 }
