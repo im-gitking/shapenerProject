@@ -26,30 +26,9 @@
       <li class="list-group-item">Item 2</li>
       <li class="list-group-item">Item 3</li>
       <li class="list-group-item">Item 4</li>
-      <li class="list-group-2">Item 5</li>
     </ul>
    </div>
   </div>
-
-<script>
-    let li = document.getElementsByClassName('list-group-item');
-    li[2].style.backgroundColor = 'green';
-
-    for(let l of li) {
-      l.style.fontWeight = 'bold';
-    }
-    let li2 = document.getElementsByTagName('li');
-    li2[li2.length - 1].style.backgroundColor = 'blue';
-    
-    li2[1].style.backgroundColor = 'green';
-    li2[2].style.display = 'none';
-
-    let li3 = document.querySelectorAll('li');
-    li3[1].style.color = 'green';
-
-    let li4 = document.querySelectorAll('li:nth-child(odd)');
-    li4.forEach((l) => l.style.backgroundColor = 'green');
-    
-</script>
+<script src="demo.js"></script>
 </body>
 </html>
