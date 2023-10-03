@@ -7,8 +7,11 @@ function storeLocal(e) {
     let fName = document.getElementById('fname').value;
     let lName = document.getElementById('lname').value;
 
-    console.log(fName);
-    console.log(lName);
+    let userObj = {
+        firstName: fName,
+        lastName: lName
+    };
 
-    localStorage.setItem(fName, lName);
+    let userObjSerialized = JSON.stringify(userObj);
+    localStorage.setItem('user', userObjSerialized);
 }
