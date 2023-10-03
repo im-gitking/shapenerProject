@@ -1,7 +1,9 @@
 let submitBtn = document.getElementById('formSubmit');
-let outputDiv = document.getElementById('output');
-
+let outputList = document.getElementById('output');
+// add User
 submitBtn.addEventListener('submit', storeLocal);
+// delet user
+outputList.addEventListener('click', delUser);
 
 function storeLocal(e) {
     e.preventDefault();
@@ -17,10 +19,36 @@ function storeLocal(e) {
     let addtext = `${name} - ${email} - ${phone}`;
     console.log(addtext);
     
-    let newDiv = document.createElement('div');
-    newDiv.appendChild(document.createTextNode(addtext));
-    outputDiv.appendChild(newDiv);
+    // add new user in list
+    let newLi = document.createElement('li');
+    newLi.appendChild(document.createTextNode(addtext));
+    // add delete button
+    let delBtn = document.createElement('input');
+    delBtn.setAttribute('type', 'button');
+    delBtn.setAttribute('value', 'delete');
+    delBtn.className = 'delete';
+    
+    newLi.appendChild(delBtn);
+    outputList.appendChild(newLi);
 
     let userObjSerialized = JSON.stringify(userObj);
-    localStorage.setItem(email, userObjSerialized);
+    localStorage.setItem(name, userObjSerialized);
+}
+
+function delUser(e) {
+    if(e.target.classList.contains('delete')) {
+        let targetElm = e.target.previousSibling;
+        let targetText = targetElm.nodeValue;
+        let keyValue = '';
+        for(let i = 0; i <= targetText.length; i++) {
+            if(targetText[i] == '-') {
+                break;
+            }
+            keyValue = keyValue + targetText[i]
+        }
+        keyValue = keyValue.slice(0, -1);
+        localStorage.removeItem(keyValue);
+
+        targetElm.parentElement.remove();
+    }
 }
