@@ -1,11 +1,13 @@
 let form = document.getElementById('addForm');
 let itemList = document.getElementById('items');
-let filter = document.getElementsByName('filter');
+let filter = document.getElementById('filter');
 
 // form submit event
 form.addEventListener('submit', addItem);
 // delete event
 itemList.addEventListener('click', removeItem);
+// filter event
+filter.addEventListener('keyup', filterItems);
 
 // add item
 function addItem(e) {
@@ -28,18 +30,7 @@ function addItem(e) {
     // append text node in del
     deleteBtn.appendChild(document.createTextNode('X'));
 
-    // create edit button
-    let editBtn = document.createElement('button');
-    // add class to edit button
-    editBtn.className = 'btn btn-warning mx-1 btn-sm float-right edit';
-    // add text node
-    editBtn.appendChild(document.createTextNode('Edit'));
-
-
-    li.appendChild(editBtn);
-
     li.appendChild(deleteBtn);
-
 
     itemList.appendChild(li);
 
@@ -53,4 +44,22 @@ function removeItem(e) {
             itemList.removeChild(li);
         }
     }
+}
+
+// filter items
+function filterItems(e) {
+    // convert text to lowcase
+    let text = e.target.value.toLowerCase();
+    // get lis
+    let items = itemList.getElementsByTagName('li');
+    // convert to an array
+    Array.from(items).forEach(function(item) {
+        let itemName = item.firstChild.textContent;
+        if(itemName.toLowerCase().indexOf(text) != -1) {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+
 }
