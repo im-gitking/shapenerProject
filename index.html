@@ -26,7 +26,7 @@
       <li class="list-group-item">Item 2</li>
       <li class="list-group-item">Item 3</li>
       <li class="list-group-item">Item 4</li>
-      <li class="list-group-2">Item 4</li>
+      <li class="list-group-2">Item 5</li>
     </ul>
    </div>
   </div>
@@ -40,6 +40,16 @@
     }
     let li2 = document.getElementsByTagName('li');
     li2[li2.length - 1].style.backgroundColor = 'blue';
+    
+    li2[1].style.backgroundColor = 'green';
+    li2[2].style.display = 'none';
+
+    let li3 = document.querySelectorAll('li');
+    li3[1].style.color = 'green';
+
+    let li4 = document.querySelectorAll('li:nth-child(odd)');
+    li4.forEach((l) => l.style.backgroundColor = 'green');
+    
 </script>
 </body>
 </html>
