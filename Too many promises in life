@@ -1,0 +1,47 @@
+const posts = [{ title: 'POST1' }];
+
+let allPosts = '';
+for(let post in posts) {
+    //console.log(posts[post].title);
+    allPosts += posts[post].title;
+}
+
+function updateLastUserActivityTime() {
+    return new Promise((res, rej) => {
+        setTimeout(() => {
+            res(Date());
+        }, 1000);
+    })
+}
+
+function createPost() {
+    return new Promise((res, rej) => {
+        setTimeout(() => {
+            const post = [{ title: 'POST2' }];
+            posts.push(post);
+            console.log(posts)
+            allPosts += post.title;
+            res();
+        }, 1000);
+    })
+}
+
+function deletePost() {
+    return new Promise((res, rej) => {
+        setTimeout(() => {
+            if(posts.length > 0) {
+                const popped = posts.pop();
+                res(popped.title);
+            }
+            else {
+                rej('No More Post to Delete.');
+            }
+        })
+    })
+}
+
+createPost();
+const promise1 = updateLastUserActivityTime();
+
+
+Promise.all([promise1, allPosts]).then(res => console.log(res));
