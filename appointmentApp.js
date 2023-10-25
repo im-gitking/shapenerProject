@@ -8,18 +8,18 @@ outputList.addEventListener('click', delUser);
 window.addEventListener('DOMContentLoaded', () => {
     // getting stored data using GET
     axios.get('https://crudcrud.com/api/7e0b32e145a4482ea745d009dab10cdf/appointmentData')
-    .then((response) => {
-        console.log(response); 
-        
-        // show the GET rqquest results
-        for( let person in response.data) {
-            console.log(response.data[person]);
-            showOutput(response.data[person]);
-        }
-    })
-    .catch((error) => {
-        console.log(error);    
-    })
+        .then((response) => {
+            console.log(response);
+
+            // show the GET rqquest results
+            for (let person in response.data) {
+                // console.log(response.data[person]);
+                showOutput(response.data[person]);
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        })
 });
 
 function storeLocal(e) {
@@ -36,11 +36,11 @@ function storeLocal(e) {
             Email: email,
             Phone: phone
         };
-        let addtext = `${name}-${email}-${phone}`;
-        console.log(userObj);
+        // let addtext = `${name}-${email}-${phone}`;
+        // console.log(userObj);
 
         // add new user in list
-        let newLi = document.createElement('li');
+        /*let newLi = document.createElement('li');
         newLi.appendChild(document.createTextNode(addtext));
         // add delete button
         let delBtn = document.createElement('input');
@@ -55,15 +55,22 @@ function storeLocal(e) {
 
         newLi.appendChild(delBtn);
         newLi.appendChild(editBtn);
-        outputList.appendChild(newLi);
+        outputList.appendChild(newLi);*/
 
         // let userObjSerialized = JSON.stringify(userObj);
         // localStorage.setItem(email, userObjSerialized);
 
         // POST data in JSON to CrudCrud.com via AXIOS
         axios.post("https://crudcrud.com/api/7e0b32e145a4482ea745d009dab10cdf/appointmentData", userObj)
-        .then(res => console.log(res))
-        .catch(err => console.log(err));
+            .then((res) => {
+                console.log(res);
+                
+                const person = res.data;
+                document.getElementById('output').innerHTML += `<li>${person.Name}-${person.Email}-${person.Phone}<input type="button" id="${person._id}" value="delete" class="delete"><input type="button" value="edit" class="edit"></li>`;
+            })
+            .catch(err => console.log(err));
+
+
     }
 }
 
@@ -71,24 +78,39 @@ function delUser(e) {
     // for delete action
     if (e.target.classList.contains('delete')) {
         let targetElm = e.target.previousSibling;
-        let targetText = targetElm.nodeValue;
-        let keyValue = '';
-        let count = 0;
-        for (let i = 0; i < targetText.length; i++) {
-            if (targetText[i] == '-' && count == 1) {
-                break;
-            }
-            else if (targetText[i] == '-') {
-                count++;
-                keyValue = '';
-            }
-            else {
-                keyValue = keyValue + targetText[i];
-            }
-        }
+        // let targetText = targetElm.nodeValue;
+        // let keyValue = '';
+        // let count = 0;
+        // for (let i = 0; i < targetText.length; i++) {
+        //     if (targetText[i] == '-' && count == 1) {
+        //         break;
+        //     }
+        //     else if (targetText[i] == '-') {
+        //         count++;
+        //         keyValue = '';
+        //     }
+        //     else {
+        //         keyValue = keyValue + targetText[i];
+        //     }
+        // }
 
-        localStorage.removeItem(keyValue);
+        // localStorage.removeItem(keyValue);
+
+        // DELETE person deatils from Server
+        const personId = e.target.id;
+        axios.delete(`https://crudcrud.com/api/7e0b32e145a4482ea745d009dab10cdf/appointmentData/${personId}`)
+            .then((response) => {
+                console.log(response);
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+
         targetElm.parentElement.remove();
+
+
+
+
     }
 
     // for edit action
@@ -121,6 +143,6 @@ function delUser(e) {
     }
 }
 
-function showOutput(person){
-    document.getElementById('output').innerHTML += `<li>${person.Name}-${person.Email}-${person.Phone}<input type="button" value="delete" class="delete"><input type="button" value="edit" class="edit"></li>`;
+function showOutput(person) {
+    document.getElementById('output').innerHTML += `<li>${person.Name}-${person.Email}-${person.Phone}<input type="button" id="${person._id}" value="delete" class="delete"><input type="button" value="edit" class="edit"></li>`;
 }
