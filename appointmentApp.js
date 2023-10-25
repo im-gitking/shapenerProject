@@ -5,6 +5,23 @@ submitBtn.addEventListener('submit', storeLocal);
 // delet user
 outputList.addEventListener('click', delUser);
 
+window.addEventListener('DOMContentLoaded', () => {
+    // getting stored data using GET
+    axios.get('https://crudcrud.com/api/7e0b32e145a4482ea745d009dab10cdf/appointmentData')
+    .then((response) => {
+        console.log(response); 
+        
+        // show the GET rqquest results
+        for( let person in response.data) {
+            console.log(response.data[person]);
+            showOutput(response.data[person]);
+        }
+    })
+    .catch((error) => {
+        console.log(error);    
+    })
+});
+
 function storeLocal(e) {
     e.preventDefault();
     let name = document.getElementById('name').value;
@@ -44,7 +61,9 @@ function storeLocal(e) {
         // localStorage.setItem(email, userObjSerialized);
 
         // POST data in JSON to CrudCrud.com via AXIOS
-        axios.post("https://crudcrud.com/api/7e0b32e145a4482ea745d009dab10cdf/appointmentData", userObj);
+        axios.post("https://crudcrud.com/api/7e0b32e145a4482ea745d009dab10cdf/appointmentData", userObj)
+        .then(res => console.log(res))
+        .catch(err => console.log(err));
     }
 }
 
@@ -100,4 +119,8 @@ function delUser(e) {
         localStorage.removeItem(email);
         targetElm.parentElement.remove();
     }
+}
+
+function showOutput(person){
+    document.getElementById('output').innerHTML += `<li>${person.Name}-${person.Email}-${person.Phone}<input type="button" value="delete" class="delete"><input type="button" value="edit" class="edit"></li>`;
 }
