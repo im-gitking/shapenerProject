@@ -1,5 +1,10 @@
 let submitBtn = document.getElementById('formSubmit');
 let outputList = document.getElementById('output');
+
+// if PUT request is Active -> put = true, putID = value
+let putID = '';
+let put = false;
+
 // add User
 submitBtn.addEventListener('submit', storeLocal);
 // delet user
@@ -7,7 +12,7 @@ outputList.addEventListener('click', delUser);
 
 window.addEventListener('DOMContentLoaded', () => {
     // getting stored data using GET
-    axios.get('https://crudcrud.com/api/7e0b32e145a4482ea745d009dab10cdf/appointmentData')
+    axios.get('https://crudcrud.com/api/16f47d2697d740efb82582e52bb94e7a/appointmentData')
         .then((response) => {
             console.log(response);
 
@@ -23,54 +28,83 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 function storeLocal(e) {
-    e.preventDefault();
-    let name = document.getElementById('name').value;
-    let phone = document.getElementById('phone').value;
-    let email = document.getElementById('email').value;
+    // if PUT request is Active
+    if (put) {
+        e.preventDefault();
+        let name = document.getElementById('name').value;
+        let phone = document.getElementById('phone').value;
+        let email = document.getElementById('email').value;
 
-    // when all fields are filled
-    if (name != '' && phone != '' && email != '') {
+        // when all fields are filled
+        if (name != '' && phone != '' && email != '') {
+            const userObj = {
+                Name: name,
+                Email: email,
+                Phone: phone
+            };
 
-        let userObj = {
-            Name: name,
-            Email: email,
-            Phone: phone
-        };
-        // let addtext = `${name}-${email}-${phone}`;
-        // console.log(userObj);
+            // UPDATE (PUT) person data
+            axios.put(`https://crudcrud.com/api/16f47d2697d740efb82582e52bb94e7a/appointmentData/${putID}`, userObj)
+                .then((res) => {
+                    console.log(res);
+                    document.getElementById('output').innerHTML += `<li>${name}-${email}-${phone}<input type="button" id="${putID}" value="delete" class="delete"><input type="button" id="${putID}" value="edit" class="edit"></li>`;
+                })
+                .catch((err) => {
+                    console.log(err)
+                });
+            put = false;
+            putID = '';
+        }
+    } else {
+        e.preventDefault();
+        let name = document.getElementById('name').value;
+        let phone = document.getElementById('phone').value;
+        let email = document.getElementById('email').value;
 
-        // add new user in list
-        /*let newLi = document.createElement('li');
-        newLi.appendChild(document.createTextNode(addtext));
-        // add delete button
-        let delBtn = document.createElement('input');
-        delBtn.setAttribute('type', 'button');
-        delBtn.setAttribute('value', 'delete');
-        delBtn.className = 'delete';
-        // add edit button
-        let editBtn = document.createElement('input');
-        editBtn.setAttribute('type', 'button');
-        editBtn.setAttribute('value', 'edit');
-        editBtn.className = 'edit';
+        // when all fields are filled
+        if (name != '' && phone != '' && email != '') {
 
-        newLi.appendChild(delBtn);
-        newLi.appendChild(editBtn);
-        outputList.appendChild(newLi);*/
+            let userObj = {
+                Name: name,
+                Email: email,
+                Phone: phone
+            };
+            // let addtext = `${name}-${email}-${phone}`;
+            // console.log(userObj);
 
-        // let userObjSerialized = JSON.stringify(userObj);
-        // localStorage.setItem(email, userObjSerialized);
+            // add new user in list
+            /*let newLi = document.createElement('li');
+            newLi.appendChild(document.createTextNode(addtext));
+            // add delete button
+            let delBtn = document.createElement('input');
+            delBtn.setAttribute('type', 'button');
+            delBtn.setAttribute('value', 'delete');
+            delBtn.className = 'delete';
+            // add edit button
+            let editBtn = document.createElement('input');
+            editBtn.setAttribute('type', 'button');
+            editBtn.setAttribute('value', 'edit');
+            editBtn.className = 'edit';
+    
+            newLi.appendChild(delBtn);
+            newLi.appendChild(editBtn);
+            outputList.appendChild(newLi);*/
 
-        // POST data in JSON to CrudCrud.com via AXIOS
-        axios.post("https://crudcrud.com/api/7e0b32e145a4482ea745d009dab10cdf/appointmentData", userObj)
-            .then((res) => {
-                console.log(res);
-                
-                const person = res.data;
-                document.getElementById('output').innerHTML += `<li>${person.Name}-${person.Email}-${person.Phone}<input type="button" id="${person._id}" value="delete" class="delete"><input type="button" value="edit" class="edit"></li>`;
-            })
-            .catch(err => console.log(err));
+            // let userObjSerialized = JSON.stringify(userObj);
+            // localStorage.setItem(email, userObjSerialized);
+
+            // POST data in JSON to CrudCrud.com via AXIOS
+            axios.post("https://crudcrud.com/api/16f47d2697d740efb82582e52bb94e7a/appointmentData", userObj)
+                .then((res) => {
+                    console.log(res);
+
+                    const person = res.data;
+                    document.getElementById('output').innerHTML += `<li>${person.Name}-${person.Email}-${person.Phone}<input type="button" id="${person._id}" value="delete" class="delete"><input type="button" id="${person._id}" value="edit" class="edit"></li>`;
+                })
+                .catch(err => console.log(err));
 
 
+        }
     }
 }
 
@@ -98,7 +132,7 @@ function delUser(e) {
 
         // DELETE person deatils from Server
         const personId = e.target.id;
-        axios.delete(`https://crudcrud.com/api/7e0b32e145a4482ea745d009dab10cdf/appointmentData/${personId}`)
+        axios.delete(`https://crudcrud.com/api/16f47d2697d740efb82582e52bb94e7a/appointmentData/${personId}`)
             .then((response) => {
                 console.log(response);
             })
@@ -108,15 +142,15 @@ function delUser(e) {
 
         targetElm.parentElement.remove();
 
-
-
-
     }
 
     // for edit action
     if (e.target.classList.contains('edit')) {
         let targetElm = e.target.previousSibling.previousSibling;
         let targetText = targetElm.nodeValue;
+
+        putID = e.target.id;
+
         let keyValue = '';
         let count = 0;
         for (let i = 0; i < targetText.length; i++) {
@@ -126,7 +160,7 @@ function delUser(e) {
                 keyValue = '';
             }
             else if (targetText[i] == '-' && count == 1) {
-                email = keyValue;
+                // email = keyValue;
                 document.getElementById('email').value = keyValue;
                 count++;
                 keyValue = '';
@@ -138,11 +172,14 @@ function delUser(e) {
         }
         document.getElementById('phone').value = keyValue;
 
-        localStorage.removeItem(email);
+        // localStorage.removeItem(email);
+
+        put = true;
+
         targetElm.parentElement.remove();
     }
 }
 
 function showOutput(person) {
-    document.getElementById('output').innerHTML += `<li>${person.Name}-${person.Email}-${person.Phone}<input type="button" id="${person._id}" value="delete" class="delete"><input type="button" value="edit" class="edit"></li>`;
+    document.getElementById('output').innerHTML += `<li>${person.Name}-${person.Email}-${person.Phone}<input type="button" id="${person._id}" value="delete" class="delete"><input type="button" id="${person._id}" value="edit" class="edit"></li>`;
 }
