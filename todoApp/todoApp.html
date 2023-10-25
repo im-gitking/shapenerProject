@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+
+<body>
+    <div class="todoForm">
+        <h3>Add New Tasks:</h3>
+        <form class="taskForm">
+            <label for="task">Task Title:</label>
+            <input type="text" id="task">
+            <label for="description">Description:</label>
+            <input type="text" id="description">
+            <input type="submit" value="Add Item">
+        </form>
+    </div>
+
+    <div class="todoDisplay">
+        <hr>
+        <h3>Pending Tasks:</h3>
+        <ul class="pendingTasks"></ul>
+
+        <hr>
+        <h3>Completed Tasks:</h3>
+        <ul class="doneTasks"></ul>
+    </div>
+
+
+    <script src="todoApp.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.1/axios.min.js"></script>
+</body>
+
+</html>
